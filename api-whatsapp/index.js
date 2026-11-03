@@ -118,11 +118,13 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const data = JSON.parse(body);
-                const { number, message, image } = data;
+                const message = data.message || data.text;
+                const number = data.number || data.group || data.chatId || data.to;
+                const image = data.image || data.media;
                 
                 if (!number || !message) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ error: 'Parâmetros "number" e "message" são obrigatórios.' }));
+                    res.end(JSON.stringify({ error: 'Parâmetros "number" (ou grupo) e "message" são obrigatórios.' }));
                     return;
                 }
 
